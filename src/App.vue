@@ -26,7 +26,7 @@
 
 <script setup>
 import { ref, nextTick } from "vue";
-import { useLocalStorage, onClickOutside } from "@vueuse/core";
+import { useLocalStorage, onClickOutside, useEventListener } from "@vueuse/core";
 
 const showModal = ref(false);
 const textAreaRef = ref(null);
@@ -42,6 +42,16 @@ const noteMaxLength = 200;
 onClickOutside(modalRef, () => {
   if (showModal.value) toggleModal(false);
 });
+
+// close modal when pressing escape key
+useEventListener(modalRef, 'keydown', (e) => {
+  if (e.key === 'Escape') toggleModal(false);
+})
+
+// add note when pressing enter in textarea
+useEventListener(textAreaRef, 'keydown', (e) => {
+  if (e.key === 'Enter') addNote();
+})
 
 // generate random color
 function getRandomColor() {
